@@ -10,9 +10,11 @@ import java.util.stream.IntStream;
  */
 public class ArrayStorage {
     Resume[] storage = new Resume[10000];
+    int size = 0;
 
     void clear() {
-        Arrays.fill(this.storage, null);
+        Arrays.fill(storage, 0, size, null);
+        size = 0;
     }
 
     void save(Resume r) {
@@ -22,7 +24,8 @@ public class ArrayStorage {
                 .orElse(-1);
 
         if(firstNullIndex != -1){
-            this.storage[firstNullIndex] = r;
+            storage[firstNullIndex] = r;
+            size++;
         }else {
             throw new RuntimeException("Storage is full");
         }
@@ -30,20 +33,19 @@ public class ArrayStorage {
     }
 
     Resume get(String uuid) {
-        Optional<Resume> optional = Arrays.stream(this.storage)
+        Optional<Resume> optional = Arrays.stream(storage)
                 .filter(Objects::nonNull)
                 .filter(resume -> resume.uuid.equals(uuid))
                 .findFirst();
 
-        //Not sure good solution to return new object. possible notFoundException is better solution
-        // but the task not allow to change of methods signature
-        return optional.orElseGet(Resume::new);
+        return optional.orElseGet(null);
     }
 
     void delete(String uuid) {
         int index = this.findIndexByUuid(uuid);
         if(index != -1){
-            System.arraycopy(this.storage, index + 1, this.storage, index, this.storage.length - index - 1);
+            size--;
+            System.arraycopy(storage, index + 1, storage, index, storage.length - index - 1);
         }
     }
 
@@ -51,17 +53,17 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        return Arrays.stream(this.storage).filter(Objects::nonNull).toArray(Resume[]::new);
+        return Arrays.stream(storage).filter(Objects::nonNull).toArray(Resume[]::new);
     }
 
     int size() {
-        return (int) Arrays.stream(this.storage).filter(Objects::nonNull).count();
+        return size;
     }
 
     private int findIndexByUuid(String uuid){
         int resumeIndex = -1;
-        for (int i = 0; i < this.storage.length; i++) {
-            if(this.storage[i] == null){
+        for (int i = 0; i < storage.length; i++) {
+            if(storage[i] == null){
                 return resumeIndex;
             }else {
                 if(this.storage[i] != null && this.storage[i].uuid.equals(uuid)){
