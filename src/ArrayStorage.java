@@ -1,5 +1,3 @@
-import com.sun.javaws.exceptions.InvalidArgumentException;
-
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,10 +21,10 @@ public class ArrayStorage {
                 .findFirst()
                 .orElse(-1);
 
-        if(firstNullIndex != -1){
+        if (firstNullIndex != -1) {
             storage[firstNullIndex] = r;
             size++;
-        }else {
+        } else {
             throw new RuntimeException("Storage is full");
         }
 
@@ -43,7 +41,7 @@ public class ArrayStorage {
 
     void delete(String uuid) {
         int index = this.findIndexByUuid(uuid);
-        if(index != -1){
+        if (index != -1) {
             size--;
             System.arraycopy(storage, index + 1, storage, index, storage.length - index - 1);
         }
@@ -60,13 +58,13 @@ public class ArrayStorage {
         return size;
     }
 
-    private int findIndexByUuid(String uuid){
+    private int findIndexByUuid(String uuid) {
         int resumeIndex = -1;
         for (int i = 0; i < storage.length; i++) {
-            if(storage[i] == null){
+            if (storage[i] == null) {
                 return resumeIndex;
-            }else {
-                if(this.storage[i] != null && this.storage[i].uuid.equals(uuid)){
+            } else {
+                if (this.storage[i] != null && this.storage[i].uuid.equals(uuid)) {
                     resumeIndex = i;
                 }
             }
