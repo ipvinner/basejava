@@ -1,7 +1,5 @@
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 /**
  * Array based storage for Resumes
@@ -16,8 +14,8 @@ public class ArrayStorage {
     }
 
     void save(Resume r) {
-            storage[size] = r;
-            size++;
+        storage[size] = r;
+        size++;
     }
 
     Resume get(String uuid) {
