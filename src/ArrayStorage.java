@@ -16,23 +16,12 @@ public class ArrayStorage {
     }
 
     void save(Resume r) {
-        int firstNullIndex = IntStream.range(0, storage.length)
-                .filter(i -> storage[i] == null)
-                .findFirst()
-                .orElse(-1);
-
-        if (firstNullIndex != -1) {
-            storage[firstNullIndex] = r;
+            storage[size] = r;
             size++;
-        } else {
-            throw new RuntimeException("Storage is full");
-        }
-
     }
 
     Resume get(String uuid) {
         Optional<Resume> optional = Arrays.stream(storage)
-                .filter(Objects::nonNull)
                 .filter(resume -> resume.uuid.equals(uuid))
                 .findFirst();
 
@@ -43,7 +32,7 @@ public class ArrayStorage {
         int index = this.findIndexByUuid(uuid);
         if (index != -1) {
             size--;
-            System.arraycopy(storage, index + 1, storage, index, storage.length - index - 1);
+            System.arraycopy(storage, index + 1, storage, index, size);
         }
     }
 
@@ -51,7 +40,9 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        return Arrays.stream(storage).filter(Objects::nonNull).toArray(Resume[]::new);
+        Resume[] resumes = new Resume[size];
+        System.arraycopy(storage, 0, resumes, 0, size);
+        return resumes;
     }
 
     int size() {
@@ -60,13 +51,10 @@ public class ArrayStorage {
 
     private int findIndexByUuid(String uuid) {
         int resumeIndex = -1;
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] == null) {
+        for (int i = 0; i < size; i++) {
+            if (this.storage[i].uuid.equals(uuid)) {
+                resumeIndex = i;
                 return resumeIndex;
-            } else {
-                if (this.storage[i] != null && this.storage[i].uuid.equals(uuid)) {
-                    resumeIndex = i;
-                }
             }
         }
         return resumeIndex;
