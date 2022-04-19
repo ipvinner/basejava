@@ -1,5 +1,4 @@
 import java.util.Arrays;
-import java.util.Optional;
 
 /**
  * Array based storage for Resumes
@@ -19,15 +18,13 @@ public class ArrayStorage {
     }
 
     Resume get(String uuid) {
-        Optional<Resume> optional = Arrays.stream(storage)
+        return Arrays.stream(storage)
                 .filter(resume -> resume.uuid.equals(uuid))
-                .findFirst();
-
-        return optional.orElseGet(null);
+                .findFirst().get();
     }
 
     void delete(String uuid) {
-        int index = this.findIndexByUuid(uuid);
+        int index = findIndexByUuid(uuid);
         if (index != -1) {
             size--;
             System.arraycopy(storage, index + 1, storage, index, size);
@@ -50,7 +47,7 @@ public class ArrayStorage {
     private int findIndexByUuid(String uuid) {
         int resumeIndex = -1;
         for (int i = 0; i < size; i++) {
-            if (this.storage[i].uuid.equals(uuid)) {
+            if (storage[i].uuid.equals(uuid)) {
                 resumeIndex = i;
                 return resumeIndex;
             }
