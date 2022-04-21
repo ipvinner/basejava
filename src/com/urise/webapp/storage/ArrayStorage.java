@@ -3,6 +3,7 @@ package com.urise.webapp.storage;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 /**
  * Array based storage for Resumes
@@ -17,39 +18,43 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        if(size >= 10000){
+        if (findIndex(r.getUuid()) != -1) {
+            System.out.println("Resume with uuid: " + r.getUuid() + " is already exists");
+            return;
+        }
+        if (size >= storage.length) {
             System.out.println("Storage is full");
-        }else {
+        } else {
             storage[size] = r;
             size++;
         }
     }
 
-    public void update(Resume r){
-        int index = findIndexByUuid(r.getUuid());
+    public void update(Resume r) {
+        int index = findIndex(r.getUuid());
         if (index != -1) {
             storage[index] = r;
-        }else {
+        } else {
             System.out.println("Resume with uuid: " + r.getUuid() + " does not exists in storage");
         }
     }
 
     public Resume get(String uuid) {
-        int index = findIndexByUuid(uuid);
-        if(index != -1){
+        int index = findIndex(uuid);
+        if (index != -1) {
             return storage[index];
-        }else {
+        } else {
             System.out.println("Resume with uuid: " + uuid + " does not exists in storage");
             return null;
         }
     }
 
     public void delete(String uuid) {
-        int index = findIndexByUuid(uuid);
+        int index = findIndex(uuid);
         if (index != -1) {
             size--;
             System.arraycopy(storage, index + 1, storage, index, size);
-        }else {
+        } else {
             System.out.println("Resume with uuid: " + uuid + " does not exists");
         }
     }
@@ -67,14 +72,7 @@ public class ArrayStorage {
         return size;
     }
 
-    private int findIndexByUuid(String uuid) {
-        int resumeIndex = -1;
-        for (int i = 0; i < size; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                resumeIndex = i;
-                return resumeIndex;
-            }
-        }
-        return resumeIndex;
+    private int findIndex(String uuid) {
+        return IntStream.range(0, size).filter(i -> storage[i].getUuid().equals(uuid)).findFirst().orElse(-1);
     }
 }
