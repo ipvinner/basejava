@@ -20,9 +20,7 @@ public class ArrayStorage {
     public void save(Resume r) {
         if (findIndex(r.getUuid()) != -1) {
             System.out.println("Resume with uuid: " + r.getUuid() + " is already exists");
-            return;
-        }
-        if (size >= storage.length) {
+        } else if (size >= storage.length) {
             System.out.println("Storage is full");
         } else {
             storage[size] = r;
@@ -73,6 +71,9 @@ public class ArrayStorage {
     }
 
     private int findIndex(String uuid) {
-        return IntStream.range(0, size).filter(i -> storage[i].getUuid().equals(uuid)).findFirst().orElse(-1);
+        return IntStream.range(0, size).
+                filter(i -> storage[i].getUuid().equals(uuid)).
+                findFirst().
+                orElse(-1);
     }
 }
