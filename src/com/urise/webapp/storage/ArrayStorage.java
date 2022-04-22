@@ -9,26 +9,6 @@ import java.util.stream.IntStream;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
-    public void save(Resume r) {
-        if (findIndex(r.getUuid()) != -1) {
-            System.out.println("Resume with uuid: " + r.getUuid() + " is already exists");
-        } else if (size >= STORAGE_LIMIT) {
-            System.out.println("Storage is full");
-        } else {
-            storage[size] = r;
-            size++;
-        }
-    }
-
-    public void update(Resume r) {
-        int index = findIndex(r.getUuid());
-        if (index != -1) {
-            storage[index] = r;
-        } else {
-            System.out.println("Resume with uuid: " + r.getUuid() + " does not exists in storage");
-        }
-    }
-
 
 
     protected int findIndex(String uuid) {
@@ -36,5 +16,10 @@ public class ArrayStorage extends AbstractArrayStorage {
                 filter(i -> storage[i].getUuid().equals(uuid)).
                 findFirst().
                 orElse(-1);
+    }
+
+    @Override
+    protected void doSave(int index, Resume r) {
+        storage[size] = r;
     }
 }
