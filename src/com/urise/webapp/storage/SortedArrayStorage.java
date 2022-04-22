@@ -2,46 +2,45 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
 
-import java.util.stream.IntStream;
+import java.util.Arrays;
 
-/**
- * Array based storage for Resumes
- */
-public class ArrayStorage extends AbstractArrayStorage {
+public class SortedArrayStorage extends AbstractArrayStorage {
 
+    @Override
     public void save(Resume r) {
-        if (findIndex(r.getUuid()) != -1) {
+        int index = findIndex(r.getUuid());
+        if (index >= 0) {
             System.out.println("Resume with uuid: " + r.getUuid() + " is already exists");
         } else if (size >= STORAGE_LIMIT) {
             System.out.println("Storage is full");
         } else {
-            storage[size] = r;
+            storage[Math.abs(index) - 1] = r;
             size++;
         }
     }
 
+    @Override
     public void update(Resume r) {
         int index = findIndex(r.getUuid());
-        if (index != -1) {
+        if (index >= 0) {
             storage[index] = r;
         } else {
             System.out.println("Resume with uuid: " + r.getUuid() + " does not exists in storage");
         }
     }
 
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
+    @Override
     public Resume[] getAll() {
         Resume[] resumes = new Resume[size];
         System.arraycopy(storage, 0, resumes, 0, size);
         return resumes;
     }
 
+    @Override
     protected int findIndex(String uuid) {
-        return IntStream.range(0, size).
-                filter(i -> storage[i].getUuid().equals(uuid)).
-                findFirst().
-                orElse(-1);
+        Resume searchKey = new Resume();
+        searchKey.setUuid(uuid);
+        return Arrays.binarySearch(storage, 0, size, searchKey);
     }
+
 }
