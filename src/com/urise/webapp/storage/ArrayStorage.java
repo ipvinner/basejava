@@ -9,8 +9,6 @@ import java.util.stream.IntStream;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
-
-
     protected int findIndex(String uuid) {
         return IntStream.range(0, size).
                 filter(i -> storage[i].getUuid().equals(uuid)).
