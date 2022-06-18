@@ -8,16 +8,22 @@ import java.util.stream.IntStream;
  * Array based storage for Resumes
  */
 public class ArrayStorage extends AbstractArrayStorage {
-
-    protected int findIndex(String uuid) {
-        return IntStream.range(0, size).
-                filter(i -> storage[i].getUuid().equals(uuid)).
-                findFirst().
-                orElse(-1);
+    @Override
+    protected void fillDeletedElement(int index) {
+        storage[index] = storage[size - 1];
     }
 
     @Override
-    protected void doSave(int index, Resume r) {
+    protected void insertElement(Resume r, int index) {
         storage[size] = r;
+    }
+
+    protected Integer getSearchKey(String uuid) {
+        for (int i = 0; i < size; i++) {
+            if (uuid.equals(storage[i].getUuid())) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
